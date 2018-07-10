@@ -1,2 +1,0 @@
-# cherry
-scrapy爬虫
