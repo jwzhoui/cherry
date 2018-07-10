@@ -138,3 +138,19 @@ class ProxyMiddleware(object):
         tunnel = random.randint(1, 10000)
         request.headers['Proxy-Tunnel'] = str(tunnel)
 
+
+class PeopleUserAgentMiddleware(object):  # 随机切换请求头
+    '''
+    set User-Agent
+    '''
+
+    def __init__(self, user_agent):
+        self.user_agent = user_agent
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(user_agent=crawler.settings.get('USER_AGENTS'))
+
+    def process_request(self, request, spider):
+        agent = random.choice(self.user_agent)
+        request.headers['User-Agent'] = agent

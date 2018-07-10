@@ -329,10 +329,10 @@ CONCURRENT_REQUESTS = 100
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
-#CONCURRENT_REQUESTS_PER_IP = 16
+# CONCURRENT_REQUESTS_PER_DOMAIN = 16
+CONCURRENT_REQUESTS_PER_IP = 16
 # log 级别
 LOG_LEVEL = 'INFO'
 # Disable cookies (enabled by default)
@@ -363,7 +363,7 @@ SPIDER_MIDDLEWARES = {
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    # 'fangworld.middlewares.PeopleUserAgentMiddleware': 1,
+    'cherry.middlewares.PeopleUserAgentMiddleware': 3,
     'cherry.middlewares.ProxyMiddleware': 2,
 }
 
@@ -378,13 +378,12 @@ DOWNLOADER_MIDDLEWARES = {
 # Pipeline处理类数字越小权重越大
 ITEM_PIPELINES = {
     'cherry.pipelines.CherryPipeline': 1,
-    'cherry.pipelines.CherryPipeline2': 11,
 }
 
 #################数据库配置######################
 mysql={
     'host':'192.168.3.207',
-    'port':'3306',
+    'port':3306,
     'user':'root',
     'passwd':'root',
     'db':'bbzf',
@@ -395,7 +394,7 @@ mysql={
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-#AUTOTHROTTLE_START_DELAY = 5
+AUTOTHROTTLE_START_DELAY = 5
 # The maximum download delay to be set in case of high latencies
 #AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to

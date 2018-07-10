@@ -6,9 +6,11 @@ import MySQLdb
 import sys
 
 from cherry import settings
+from cherry.spiders.other.jyallLog import mylog
 
 reload(sys)
 sys.setdefaultencoding('utf8')
+
 class SQLiteWraper(object):
     """
     数据库的一个小封装，更好的处理多线程写入
@@ -17,7 +19,7 @@ class SQLiteWraper(object):
         self.lock = threading.RLock()  # 锁
         kwargs = dict(settings.mysql,**kwargs)
         self.host = kwargs.get('host','192.168.3.207')  # 数据库连接参数
-        self.port = kwargs.get('port','3306')
+        self.port = kwargs.get('port',3306)
         self.user = kwargs.get('user','root')
         self.passwd = kwargs.get('passwd', 'root')
         self.db = kwargs.get('db','bbzf')
@@ -96,13 +98,16 @@ class SQLiteWraper(object):
     def insertData(self, table, my_dict,conn=None):
         try:
             cu = conn.cursor()
-            cols = ', '.join(self.code(my_dict.keys()))
-            values = ','.join(['"'+str(i)+'"' for i in self.code(my_dict.values())])
-            values = values.replace('"null"', 'null').replace('"None"','null').replace('""','null')
-            sql = 'insert INTO %s (%s) VALUES (%s)' % (table, cols,  values )
-            cu.execute(sql)
-            conn.commit()
+            if len(my_dict)>0:
+                cols = ', '.join(self.code(my_dict.keys()))
+                values = ','.join(['"'+str(i)+'"' for i in self.code(my_dict.values())])
+                values = values.replace('"null"', 'null').replace('"None"','null').replace('""','null')
+                sql = 'insert INTO %s (%s) VALUES (%s)' % (table, cols,  values )
+                # mylog.info('单条插入sql===%s' % sql)
+                cu.execute(sql)
+                conn.commit()
         except sqlite3.IntegrityError, e:
+            mylog.error('err 单条插入sql===%s' % sql)
             traceback.print_exc()
             print e
 
@@ -131,20 +136,20 @@ class SQLiteWraper(object):
             traceback.print_exc()
             print e
 
-    @conn_trans
+
     def get_rental_mode(self, rental_mode_name,conn=None):
         if rental_mode_name is None or rental_mode_name == '':
             return []
         sql = 'select sci.id from sys_code_info sci where sci.name = "%s"' % (rental_mode_name)
-        list = conn.fetchall(sql)
+        list = self.fetchall(sql)
         return list
 
-    @conn_trans
+
     def get_village_info_by_name(self, name,conn=None):
         if name is None or name == '':
             return []
         sql = 'select bvi.id,bvi.name,bvi.city_id,bvi.city_name,bvi.city_pinyin,bvi.area_id,bvi.area_name,bvi.area_pinyin,bvi.trade_area_id,bvi.trade_area_name' \
               ',bvi.metro_id,bvi.metro_name,bvi.station_id,bvi.station_name,bvi.address,bvi.province_id,bvi.province_name,bvi.province_pinyin from basic_village_info bvi where bvi.name = "%s"' % (
               name)
-        list = conn.fetchall(sql)
+        list = self.fetchall(sql)
         return list
