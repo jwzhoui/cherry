@@ -40,6 +40,11 @@ class RedisCache(object):
         except Exception, e:
             print "redis 链接错误"
 
+
+    @property
+    def connection(self):
+        return self._connection
+
     @staticmethod
     def create_pool(self):
 
@@ -68,7 +73,7 @@ class RedisCache(object):
 
         return self._connection.delete(key)
 if __name__ == '__main__':
-    print RedisCache().set_data('Testkey', "Simple Test")
-    print RedisCache().get_data('Testkey')
+    connection = RedisCache().connection
+    print connection.get('Testkey')
     print RedisCache().del_data('Testkey')
-    print RedisCache().get_data('Testkey')
+    print RedisCache()

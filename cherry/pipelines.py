@@ -51,5 +51,5 @@ class CherryPipeline(object):
             my_dict['province_name'] = village_info[16]
             my_dict['province_pinyin'] = village_info[17]
         # 房屋详情
-        db.insertData('basic_house_info', my_dict)
+        db.insertData('basic_hous', my_dict)
 
