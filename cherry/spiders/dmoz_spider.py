@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from cherry.items import FirstItemLoader, CherryItem
 from cherry.spiders.other.jyallLog import mylog
 from cherry.spiders.other.other import isNum, get_hous_broker, exec_time, re_request_429
+from cherry.spiders.other.redisCache import RedisCache
 
 reload(sys)
 sys.setdefaultencoding('utf8')

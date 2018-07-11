@@ -7,6 +7,7 @@ import sys
 
 from cherry import settings
 from cherry.spiders.other.jyallLog import mylog
+from cherry.spiders.other.other import insert_redis
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -94,8 +95,9 @@ class SQLiteWraper(object):
             list[i] = str(s)
         return list
     # 插入数据
+    @insert_redis
     @conn_trans
-    def insertData(self, table, my_dict,conn=None):
+    def insertData(self, table=None, my_dict=None,conn=None):
         try:
             cu = conn.cursor()
             if len(my_dict)>0:

@@ -318,6 +318,7 @@ USER_AGENTS = [
     'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)',
     'Mozilla/4.0 (compatible; MSIE 4.0; Windows NT 5.1; Trident/4.0; Maxthon; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; msn OptimizedIE8;ZHCN)']
 
+
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 # 编码设置
@@ -389,7 +390,16 @@ mysql={
     'db':'bbzf',
     'charset':'utf8'
 }
-
+## redis 集群 或单 配置  （node 只有一个时时单击）
+PASTRY_TOKEN='pastry:token:'
+REDIS_NODES = [
+    # {'host': '10.156.129.7', 'port': 8001},
+    # {'host': '10.156.129.8', 'port': 8002},
+    # {'host': '10.156.129.9', 'port': 8003},
+    {'host': '127.0.0.1', 'port': 6379},
+]
+REDIS_PASSWORD = '123456'
+MAX_CONNECTIONS = 8
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True

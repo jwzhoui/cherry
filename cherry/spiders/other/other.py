@@ -2,8 +2,10 @@
 # 判断是否为浮点数
 import threading
 import time
-import traceback
+import traceback,sys
 from cherry.spiders.other.jyallLog import mylog
+from cherry.spiders.other.redisCache import RedisCache
+
 
 def isNum(value):
     try:
@@ -16,6 +18,18 @@ def isNum(value):
         return False
     else:
         return True
+
+# 插入redis
+def insert_redis(func):
+    def call_fun(*args, **kwargs):
+        try:
+            table_name = args[1]
+            insert_args = args[2]
+            RedisCache().set_data(table_name+':2::33::%d' % time.time(), insert_args)
+        except Exception,e:
+            print e.message
+    return call_fun
+
 
 # 函数执行时间
 def exec_time(func):
@@ -66,6 +80,19 @@ def get_hous_broker(house_url, soup):
         broker['last_update_date'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         return broker
     except Exception, e:
+        traceback_template = '''Traceback (most recent call last):
+           File "%(filename)s", line %(lineno)s, in %(name)s
+         %(type)s: %(message)s\n'''
         traceback.print_exc()
         print (e.message)
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        traceback_details = {
+        'filename': exc_traceback.tb_frame.f_code.co_filename,
+        'lineno': exc_traceback.tb_lineno,
+        'name': exc_traceback.tb_frame.f_code.co_name,
+        'type': exc_type.__name__,
+        'message': exc_value.message,  }
+        del (exc_type, exc_value, exc_traceback)
+        # ## 修改这里就可以把traceback打到任意地方，或者存储到文件中了
+        print traceback_template % traceback_details
         return broker
