@@ -400,6 +400,11 @@ REDIS_NODES = [
 ]
 REDIS_PASSWORD = '123456'
 MAX_CONNECTIONS = 8
+R_L_BASIC_HOUSE_IMAGE_INFO = 'bbzf:crawl:basic_house_image_info'
+R_L_BROKER_HOUSE_INFO = 'bbzf:crawl:broker_house_info'
+R_L_BASIC_HOUS_INFO = 'bbzf:crawl:basic_hous_info'
+
+
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True

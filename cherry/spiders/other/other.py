@@ -20,16 +20,13 @@ def isNum(value):
         return True
 
 # 插入redis
-def insert_redis(func):
-    def call_fun(*args, **kwargs):
-        try:
-            table_name = args[1]
-            insert_args = args[2]
-
-            RedisCache().set_data(table_name+':2::33::%d' % time.time(), insert_args)
-        except Exception,e:
-            print e.message
-    return call_fun
+def insert_redis(*args):
+    try:
+        table_name = args[1]
+        insert_args = args[2]
+        RedisCache().set_data(table_name+':2::33::%d' % time.time(), insert_args)
+    except Exception,e:
+        print e.message
 
 
 # 函数执行时间

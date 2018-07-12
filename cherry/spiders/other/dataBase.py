@@ -95,7 +95,6 @@ class SQLiteWraper(object):
             list[i] = str(s)
         return list
     # 插入数据
-    @insert_redis
     @conn_trans
     def insertData(self, table=None, my_dict=None,conn=None):
         try:

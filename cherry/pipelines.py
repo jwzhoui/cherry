@@ -7,11 +7,13 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from cherry.spiders.other.dataBase import SQLiteWraper
 from cherry.spiders.other.other import exec_time
-
+from cherry.spiders.other.redisCache import connection
+import json
 
 class CherryPipeline(object):
     @exec_time
     def process_item(self, item, spider):
+        redis_connection = connection
 
         my_dict = dict(item)
         # 数据入库
@@ -20,9 +22,11 @@ class CherryPipeline(object):
         # 插入图片集
         house_images = my_dict.pop('house_images',[])
         for house_image in house_images:
-            db.insertData('basic_house_image_info', house_image)
+            redis_connection.lpush('bbzf:crawl:'+'basic_house_image_info', json.dumps({'basic_house_image_info':house_image}))
+            # db.insertData('basic_house_image_info', house_image)
         # 插入经纪人
-        db.insertData('broker_house_info', broker)
+        redis_connection.lpush('bbzf:crawl:' + 'broker_house_info', json.dumps({'broker_house_info':broker}))
+        # db.insertData('broker_house_info', broker)
         #出租方式id
         rental_mode_ids = db.get_rental_mode(my_dict.get('rental_mode_name',None))
         if rental_mode_ids is not None and len(rental_mode_ids) > 0:
@@ -51,5 +55,6 @@ class CherryPipeline(object):
             my_dict['province_name'] = village_info[16]
             my_dict['province_pinyin'] = village_info[17]
         # 房屋详情
-        db.insertData('basic_hous', my_dict)
+        redis_connection.lpush('bbzf:crawl:' + 'basic_hous_info', json.dumps({'basic_hous_info':my_dict}))
+        # db.insertData('basic_hous', my_dict)
 

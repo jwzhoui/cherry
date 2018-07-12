@@ -2,8 +2,6 @@
 import redis
 from rediscluster import StrictRedisCluster
 from cherry import settings
-
-
 def operator_status(func):
     '''''get operatoration status
     '''
@@ -77,3 +75,4 @@ if __name__ == '__main__':
     print connection.get('Testkey')
     print RedisCache().del_data('Testkey')
     print RedisCache()
+connection = RedisCache().connection
