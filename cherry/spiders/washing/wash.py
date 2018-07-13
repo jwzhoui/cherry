@@ -67,12 +67,13 @@ def qwe(**kwargs):
 def do_washings():
     global lock
     lock = RLock()
+
     freeze_support()
-    pool = Pool(3) #线程池中的同时执行的进程数为3
-    for i in range(3):
-        pool.apply_async(func=washing_broker(),args=(),kwds={'a':'a'}) #线程池中的同时执行的进程数为3，当一个进程执行完毕后，如果还有新进程等待执行，则会将其添加进去
-        # pool.apply_async(func=washing_house(),args=(),kwds={'b':'b'}) #线程池中的同时执行的进程数为3，当一个进程执行完毕后，如果还有新进程等待执行，则会将其添加进去
-        # pool.apply_async(func=washing_images(),args=(),kwds={'c':'c'}) #线程池中的同时执行的进程数为3，当一个进程执行完毕后，如果还有新进程等待执行，则会将其添加进去
+    pool = Pool(3) #线程池中的同时执行的进程数为6
+    # for i in range(1):
+    pool.apply_async(func=washing_broker,args=(),kwds={'a':'a'}) #线程池中的同时执行的进程数为3，当一个进程执行完毕后，如果还有新进程等待执行，则会将其添加进去
+    pool.apply_async(func=washing_house,args=(),kwds={'b':'b'}) #线程池中的同时执行的进程数为3，当一个进程执行完毕后，如果还有新进程等待执行，则会将其添加进去
+    pool.apply_async(func=washing_images,args=(),kwds={'c':'c'}) #线程池中的同时执行的进程数为3，当一个进程执行完毕后，如果还有新进程等待执行，则会将其添加进去
         # pool.apply(func=Foo,args=(i,))
 
     print('end')
