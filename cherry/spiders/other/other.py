@@ -3,7 +3,9 @@
 import threading
 import time
 import traceback,sys
-from cherry.spiders.other.jyallLog import mylog
+# from cherry.spiders.other.jyallLog import mylog
+from scrapy.http import HtmlResponse,Request
+import scrapy
 from cherry.spiders.other.redisCache import RedisCache
 
 
@@ -35,22 +37,33 @@ def exec_time(func):
         start_time = time.time()
         ss = func(*args, **kwargs)
         end_time = time.time()
-        mylog.info('程序 %s 用时：%f秒' % (func.func_name,end_time - start_time))
+        print ('执行 %s 用时：%f秒' % (func.func_name,end_time - start_time))
         return ss
     return call_fun
 
 # 429 重新请求一次
 def re_request_429(func):
     def call_fun(*args, **kwargs):
-        response = args[1]
+        args_ = list(args)+kwargs.values()
+        response = None
+        my_scrapy = None
+        for a in args_:
+            if not response and isinstance(a,HtmlResponse):
+                response = a
+            elif not my_scrapy and isinstance(a,scrapy.Spider):
+                my_scrapy = a
+            elif response and my_scrapy:
+                break
+        assert response,my_scrapy
         response_code = response.status
-        if response_code == 200:
+        if response_code>=200 and response_code<300:
             # mylog.info('200 url ==%s' % (response.url))
             return func(*args, **kwargs)
         else:
-            mylog.info('重新请求 url ==%s' % (response.url))
-            threading._sleep(2)
-            return response.follow(url=response.url, callback=func)
+            print ('重新请求 %d  url ==%s' % (response_code,response.url))
+            threading._sleep(1)
+            # 重新请求
+            response.follow(url=response.url, callback=func)
     return call_fun
 
 

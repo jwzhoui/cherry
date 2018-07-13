@@ -7,7 +7,7 @@ import time
 import sys
 from bs4 import BeautifulSoup
 from cherry.items import FirstItemLoader, CherryItem
-from cherry.spiders.other.jyallLog import mylog
+# from cherry.spiders.other.jyallLog import mylog
 from cherry.spiders.other.other import isNum, get_hous_broker, exec_time, re_request_429
 from cherry.spiders.other.redisCache import RedisCache
 
@@ -17,15 +17,20 @@ class DmozSpider(scrapy.Spider):
     name = "beijing_haidian_zufang_1"
     allowed_domains = ['bj.58.com']
     start_urls = [
-        'http://bj.58.com/haidian/zufang/1/'
+        'http://bj.58.com/dongcheng/zufang/1/',
+        'http://bj.58.com/tongzhouqu/zufang/1/',
+        'http://bj.58.com/xicheng/zufang/1/',
+        'http://bj.58.com/jiukeshu/zufang/1/',
+        'http://bj.58.com/zhongcang/zufang/1/',
     ]
+    # handle_httpstatus_list = [404,429,504,307,302]
 
     def __init__(self):
         self.re_mem = 'http:'
         self.uri = 'bj.58.com'
         self.city = 'bj'
 
-    @re_request_429
+
     def parse(self, response):
         if response.status != 200:
             print response.statue
@@ -35,7 +40,7 @@ class DmozSpider(scrapy.Spider):
             # mylog.debug('区域url===%s' % (self.re_mem+'//'+self.uri+q))
             yield response.follow(url=self.re_mem+'//'+self.uri+q, callback=self.shangquan)
 
-    @re_request_429
+
     def shangquan(self, response):
         if response.status != 200:
             print response.statue
@@ -44,7 +49,7 @@ class DmozSpider(scrapy.Spider):
             # mylog.debug('url===%s' % (self.re_mem+s))
             yield response.follow(url=self.re_mem+s, callback=self.detail)
 
-    @re_request_429
+
     def detail(self, response):
         try:
             if response.status != 200:
@@ -150,7 +155,7 @@ class DmozSpider(scrapy.Spider):
             broker['create_date'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             broker['last_update_date'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             item.add_value('broker',broker)
-            mylog.info('====================================抓取成功===========================================')
+            # mylog.info('====================================抓取成功===========================================')
             yield item.load_item()
         except Exception, e:
             traceback_template = '''Traceback (most recent call last):

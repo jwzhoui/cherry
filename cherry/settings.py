@@ -320,7 +320,8 @@ USER_AGENTS = [
 
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+# 拒绝遵守 Robot协议
+ROBOTSTXT_OBEY = False
 # 编码设置
 FEED_EXPORT_ENCODING = 'utf-8'
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
@@ -357,8 +358,7 @@ DOWNLOAD_TIMEOUT = 100
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
-    # 在此设置请求头和代理，对应类路径
-   # 'cherry.middlewares.ProxyMiddleware': 543,
+   'cherry.middlewares.PeopleUserAgentMiddleware':1,
 }
 
 # Enable or disable downloader middlewares

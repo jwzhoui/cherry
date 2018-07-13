@@ -24,10 +24,12 @@ def washing_images(a=None,b=None,c=None):
         r_basic_house_image_info = connection.rpop(settings.R_L_BASIC_HOUSE_IMAGE_INFO)
         if not r_basic_house_image_info:
             r_basic_house_image_info = '{}'
-            time.sleep(0.1)
+            time.sleep(1.1)
         basic_house_image_info = json.loads(r_basic_house_image_info)
+        db = SQLiteWraper()
+        db.insertData()
         print a,b,c
-        print 22
+        print 22,basic_house_image_info
 
 def washing_house(a=None,b=None,c=None):
 
@@ -54,9 +56,9 @@ def washing_broker(a=None,b=None,c=None):
         r_broker_house_info = connection.rpop(settings.R_L_BROKER_HOUSE_INFO)
         if not r_broker_house_info:
             r_broker_house_info = '{}'
-            time.sleep(0.01)
+            time.sleep(1.01)
         broker_house_info = json.loads(r_broker_house_info)
-        print 11
+        print 11,broker_house_info
         print a,b,c
 
 def qwe(**kwargs):
@@ -128,6 +130,7 @@ class CherryPipeline(object):
         redis_connection.lpush('bbzf:crawl:' + 'basic_hous', my_dict)
         # db.insertData('basic_hous', my_dict)
 
-# washing()
-do_washings()
+# washing_broker()
+# washing_images()
+# do_washings()
 print 123
