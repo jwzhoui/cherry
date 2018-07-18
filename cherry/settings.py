@@ -345,7 +345,7 @@ RETRY_ENABLED = False
 # 如果您对一个非常慢的连接进行爬取(一般对通用爬虫来说并不重要)
 # 减小下载超时能让卡住的连接能被快速的放弃并解放处理其他站点的能力。
 # 减小下载超时:
-DOWNLOAD_TIMEOUT = 100
+DOWNLOAD_TIMEOUT = 10
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
 
@@ -358,7 +358,7 @@ DOWNLOAD_TIMEOUT = 100
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 SPIDER_MIDDLEWARES = {
-   'cherry.middlewares.PeopleUserAgentMiddleware':1,
+   'cherry.middlewares.CherrySpiderMiddleware':1,
 }
 
 # Enable or disable downloader middlewares
@@ -366,6 +366,7 @@ SPIDER_MIDDLEWARES = {
 DOWNLOADER_MIDDLEWARES = {
     'cherry.middlewares.PeopleUserAgentMiddleware': 3,
     'cherry.middlewares.ProxyMiddleware': 2,
+    'cherry.middlewares.ErrCodeMiddleware':4,
 }
 
 # Enable or disable extensions

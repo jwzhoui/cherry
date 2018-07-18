@@ -9,9 +9,11 @@
 import base64
 import sys
 import random
+import threading
+
 from scrapy import signals
 
-from cherry.spiders.other.other import re_request_429
+from cherry.spiders.other.other import err_request_again
 
 PY3 = sys.version_info[0] >= 3
 
@@ -158,10 +160,14 @@ class PeopleUserAgentMiddleware(object):  # 随机切换请求头
         agent = random.choice(self.user_agent)
         request.headers['User-Agent'] = agent
 
-    @re_request_429
-    def process_spider_input(self, response, spider):
-        # Called for each response that goes through the spider
-        # middleware and into the spider.
 
-        # Should return None or raise an exception.
+class ErrCodeMiddleware(object):  # 随机切换请求头
+    def process_request(self, request, spider):
+        # 下载页面前调用么
         return None
+
+    @err_request_again
+    def process_response(self, request, response, spider):
+        # 下载完页面后调用
+        return response
+

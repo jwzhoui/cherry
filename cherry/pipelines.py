@@ -58,3 +58,12 @@ class CherryPipeline(object):
         redis_connection.lpush('bbzf:crawl:' + 'basic_hous_info', json.dumps({'basic_hous_info':my_dict}))
         # db.insertData('basic_hous', my_dict)
 
+
+    def open_spider(self, spider):
+        print '开启的spider'
+        print spider
+
+
+    def close_spider(spider):
+        print '关闭的spider'
+        print spider

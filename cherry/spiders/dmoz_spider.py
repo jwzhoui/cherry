@@ -2,13 +2,13 @@
 import traceback
 import urlparse
 
-import scrapy
+import scrapy.settings
 import time
 import sys
 from bs4 import BeautifulSoup
 from cherry.items import FirstItemLoader, CherryItem
 # from cherry.spiders.other.jyallLog import mylog
-from cherry.spiders.other.other import isNum, get_hous_broker, exec_time, re_request_429
+from cherry.spiders.other.other import isNum, get_hous_broker, exec_time, err_request_again
 from cherry.spiders.other.redisCache import RedisCache
 
 reload(sys)
@@ -24,7 +24,6 @@ class DmozSpider(scrapy.Spider):
         'http://bj.58.com/zhongcang/zufang/1/',
     ]
     # handle_httpstatus_list = [404,429,504,307,302]
-
     def __init__(self):
         self.re_mem = 'http:'
         self.uri = 'bj.58.com'

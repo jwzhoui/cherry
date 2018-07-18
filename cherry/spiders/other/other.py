@@ -4,10 +4,9 @@ import threading
 import time
 import traceback,sys
 # from cherry.spiders.other.jyallLog import mylog
-from scrapy.http import HtmlResponse,Request
+from scrapy.http import HtmlResponse,Request,Response
 import scrapy
 from cherry.spiders.other.redisCache import RedisCache
-
 
 def isNum(value):
     try:
@@ -41,29 +40,55 @@ def exec_time(func):
         return ss
     return call_fun
 
-# 429 重新请求一次
-def re_request_429(func):
+# 失败请求 重新请求一次
+def err_request_again(func):
     def call_fun(*args, **kwargs):
         args_ = list(args)+kwargs.values()
+        # 线程对象
         response = None
         my_scrapy = None
+        request = None
         for a in args_:
-            if not response and isinstance(a,HtmlResponse):
+            if not response and isinstance(a,Response):
                 response = a
             elif not my_scrapy and isinstance(a,scrapy.Spider):
                 my_scrapy = a
-            elif response and my_scrapy:
+            elif not request and isinstance(a,Request):
+                request = a
+            elif response and my_scrapy and request:
                 break
         assert response,my_scrapy
         response_code = response.status
-        if response_code>=200 and response_code<300:
+        thread = threading.current_thread()
+        url = response.url
+        thread_err_urls = thread._Thread__kwargs.get('err_url')
+        if response_code<200 or response_code>=300:
             # mylog.info('200 url ==%s' % (response.url))
-            return func(*args, **kwargs)
+            # 绑定异常url到当前线程
+            if thread_err_urls:
+                if url in thread_err_urls:
+                    thread_err_urls.remove(url)
+                    print ('保存url,或抛出异常 已请求过两次, 放弃url==%s' % url)
+                    result = func(*args, **kwargs)
+                else:
+                    thread_err_urls.append(url)
+                    # 再次请求
+                    if request:
+                        print '异常url==%s', url
+                        result = request
+                    elif response.request:
+                        print '异常url==%s', response.url
+                        result = response.request
+                    else:
+                        print ('装饰器使用错误')
+            else:
+                thread._Thread__kwargs['err_url'] = [url]
+                # 再次请求
+                result = request
         else:
-            print ('重新请求 %d  url ==%s' % (response_code,response.url))
-            threading._sleep(1)
-            # 重新请求
-            response.follow(url=response.url, callback=func)
+            thread_err_urls.remove(url) if thread_err_urls and thread_err_urls in thread_err_urls else ''
+            result = func(*args, **kwargs)
+        return result
     return call_fun
 
 
